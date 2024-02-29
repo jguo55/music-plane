@@ -1,7 +1,6 @@
-const express = require('express')
+const express = require('express');
 const request = require('request');
 const dotenv = require('dotenv');
-
 
 const port = 3000
 
@@ -30,7 +29,7 @@ app.use(express.static(__dirname + '/public')); //serve assets from public folde
 
 app.get('/auth/login', (req, res) => {
 
-  var scope = "streaming user-read-email user-read-private"
+  var scope = "user-top-read"
   var state = generateRandomString(16);
 
   var auth_query_parameters = new URLSearchParams({
@@ -65,7 +64,9 @@ app.get('/auth/callback', (req, res) => {
   request.post(authOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       access_token = body.access_token;
-      res.redirect('/')
+      res.redirect('/#' + new URLSearchParams({
+        access_token: access_token
+      }).toString())
     }
   });
 
