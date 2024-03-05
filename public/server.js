@@ -11,68 +11,134 @@ const getHashParams = () => {
   return hashParams;
 };
 
-function getSeveralAlbums(query){
-  $.ajax({
-    url:`${SPOTIFY_ROOT}/albums?ids=${query}`,
-    headers: {
-      Authorization: 'Bearer ' + access_token,
-    },
-    success: function (data) {
-      return data;
-    }
-  })
+function removeDuplicates(value, index, array){
+  return array.indexOf(value) === index
 }
 
 let params = getHashParams();
 
 let access_token = params.access_token;
 
+//genres that are too broad or don't exist
+//const exclude = ['pop', 'rap', 'rock', 'pov: indie']
 
 const generate = () => document.getElementById('generate');
 
 const gen = () => {
-  const limit = 50;
-  const tracks = {};
-  let albums = {};
+  const limit = 50; //Spotify says the limit for artist endpoint is 100, when in reality it is 50
+  let offset = 0;
+
+  const genres = {};
+  const albums = {};
+  let ids = '';
+  let ids2 = '';
+
+  let result = [];
+  
+  //array of top 100 albums separated into 2 api calls
   $.ajax({
-    url: `${SPOTIFY_ROOT}/me/top/tracks?limit=${limit}&time_range=short_term`,
+    url: `${SPOTIFY_ROOT}/me/top/tracks?limit=${limit}&time_range=short_term&offset=${offset}`,
     headers: {
       Authorization: 'Bearer ' + access_token,
     },
     success: function (data) {
-      console.log(data);
-      for(let i = 0; i < 50; i++){
-        let score = 50-i;
-        tracks[data.items[i].name] = score;
-
-        if(!(data.items[i].album.id in albums)){
-          albums[data.items[i].album.id] = 0;
-        }
-        albums[data.items[i].album.id] += score;
-
-        //data.items[i].album.name.toString();
-      }
-      
-      let entries = Object.entries(albums)
-      let sorted = entries.sort((a,b) => b[1]-a[1])
-      let ids = []
-      for(let j = 0; j < 20; j++){
-        ids.push(sorted[j][0])
-      }
-      console.log(ids.toString())
       $.ajax({
-        url:`${SPOTIFY_ROOT}/albums?ids=${ids.toString()}`,
+        url: data.next,
         headers: {
           Authorization: 'Bearer ' + access_token,
         },
-        success: function (data) {
-          console.log(data.albums[0].genres)
+        success: function (data2) {
+          const items = data.items.concat(data2.items) //combine data
+          for(let i = 0; i < 100; i++){
+            if(!(items[i].artists[0].name in albums)){
+              albums[items[i].artists[0].name] = []
+            }
+            if(!(albums[items[i].artists[0].name].includes(items[i].album.name))){
+              albums[items[i].artists[0].name].push(items[i].album.name) //albums from artist that user listens to
+            }
+            if(i < 50) { //ids for artist api call
+              i == 49 ? ids += items[i].artists[0].id: ids += items[i].artists[0].id + ',';
+            } else {
+              i == 99 ? ids2 += items[i].artists[0].id: ids2 += items[i].artists[0].id + ',';
+            }
+          }
+          $.ajax({
+            url:`${SPOTIFY_ROOT}/artists?ids=${ids}`,
+            headers: {
+              Authorization: 'Bearer ' + access_token,
+            },
+            success: function (data) {
+              $.ajax({
+                url: `${SPOTIFY_ROOT}/artists?ids=${ids2}`,
+                headers: {
+                  Authorization: 'Bearer ' + access_token,
+                },
+                success: function(data2){
+                  const artists = data.artists.concat(data2.artists) //combine artists
+                  for(let i = 0; i < 100; i++){
+                    for(let x of artists[i].genres){
+                      if(!(x in genres)){
+                        genres[x] = [];
+                      }
+                      genres[x].push(artists[i].name) //include duplicates to find genres that user listens to the most
+                    }
+                  }
+                  let popular = [];
+                  for(const[key, value] of Object.entries(genres)){
+                    popular.push([value.length, key]); //get array length (longer length = user listens to that artist more)
+                    genres[key] = value.filter(removeDuplicates) //remove duplicates
+                    if(genres[key].length > 5){ //if genre has more than 5 artists, too broad, exclude
+                      for(let x of popular){
+                        if(x[1] == key){
+                          popular.splice(popular.indexOf(x), popular.indexOf(x))
+                        }
+                      }
+                      delete genres[key]
+                    }
+                  }
+                  popular = popular.sort(function(a, b) { //sort by popularity
+                    return b[0] - a[0];
+                  });
+                  console.log(popular)
+                  
+                  //add top non intersecting genres to results until there are 4
+                  //i would like to use Set.intersection but it is not widely supported
+                  result.push(genres[popular[0][1]]) //add top result
+                  for(x of popular){
+                    let intersects = false
+                    for(y of result){
+                      if(y.filter(value => genres[x[1]].includes(value)).length > 0){
+                        intersects = true
+                      }
+                    }
+                    if(!intersects){
+                      result.push(genres[x[1]])
+                    }
+                    /*if(result.length >= 4){
+                      break;
+                    }*/
+                  }
+                  console.log(result)
+
+                  /*do {
+                      (for(let j = 0; j < popular.length; j++){
+                      for(let i = 0; i < result.length; i++){
+                          if(result[i].filter(value => //(artists).includes(value)).length == 0){
+                            result.push
+                          }
+                      }
+                    }
+                  } while (result.length < 4)8?*/
+                }
+              })
+            }
+          })
         }
       })
     }
   })
-    console.log(tracks);
-    console.log(albums);
+    console.log(genres)
+    console.log(albums)
 }
 
 generate().addEventListener('click', gen)
