@@ -32,6 +32,7 @@ const gen = () => {
   const albums = {};
   let ids = '';
   let ids2 = '';
+  let ranking = {};
 
   let result = [];
   
@@ -76,6 +77,7 @@ const gen = () => {
                 success: function(data2){
                   const artists = data.artists.concat(data2.artists) //combine artists
                   for(let i = 0; i < 100; i++){
+                    artists[i].name in ranking ? ranking[artists[i].name] += 100-i : ranking[artists[i].name] = 100-i; //artist popularity ranking algorithm
                     for(let x of artists[i].genres){
                       if(!(x in genres)){
                         genres[x] = [];
@@ -85,8 +87,12 @@ const gen = () => {
                   }
                   let popular = [];
                   for(const[key, value] of Object.entries(genres)){
-                    popular.push([value.length, key]); //get array length (longer length = user listens to that artist more)
                     genres[key] = value.filter(removeDuplicates) //remove duplicates
+                    let total = 0;
+                    for(let x of genres[key]){
+                      total += ranking[x]
+                    }
+                    popular.push([total, key]) //the more artists, the better
                     if(genres[key].length > 5){ //if genre has more than 5 artists, too broad, exclude
                       for(let x of popular){
                         if(x[1] == key){
@@ -139,6 +145,7 @@ const gen = () => {
   })
     console.log(genres)
     console.log(albums)
+    console.log(ranking)
 }
 
 generate().addEventListener('click', gen)
