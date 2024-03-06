@@ -15,6 +15,14 @@ function removeDuplicates(value, index, array){
   return array.indexOf(value) === index
 }
 
+function nextSquare(int){
+  let i = 0;
+  do {
+    i++
+  } while (i*i <= int)
+  return i
+}
+
 let params = getHashParams();
 
 let access_token = params.access_token;
@@ -50,12 +58,13 @@ const gen = () => {
         },
         success: function (data2) {
           const items = data.items.concat(data2.items) //combine data
+          console.log(items)
           for(let i = 0; i < 100; i++){
             if(!(items[i].artists[0].name in albums)){
               albums[items[i].artists[0].name] = []
             }
-            if(!(albums[items[i].artists[0].name].includes(items[i].album.name))){
-              albums[items[i].artists[0].name].push(items[i].album.name) //albums from artist that user listens to
+            if(!(items[i].album.images.length == 0) && !(albums[items[i].artists[0].name].includes(items[i].album.images[0].url))){
+              albums[items[i].artists[0].name].push(items[i].album.images[0].url) //albums from artist that user listens to
             }
             if(i < 50) { //ids for artist api call
               i == 49 ? ids += items[i].artists[0].id: ids += items[i].artists[0].id + ',';
@@ -92,14 +101,13 @@ const gen = () => {
                     for(let x of genres[key]){
                       total += ranking[x]
                     }
-                    popular.push([total, key]) //the more artists, the better
-                    if(genres[key].length > 5){ //if genre has more than 5 artists, too broad, exclude
+                    popular.push([total, key])
+                    if(genres[key].length > 5){ // if more than 9 albums too broad
                       for(let x of popular){
                         if(x[1] == key){
                           popular.splice(popular.indexOf(x), popular.indexOf(x))
                         }
                       }
-                      delete genres[key]
                     }
                   }
                   popular = popular.sort(function(a, b) { //sort by popularity
@@ -120,21 +128,25 @@ const gen = () => {
                     if(!intersects){
                       result.push(genres[x[1]])
                     }
-                    /*if(result.length >= 4){
+                    if(result.length >= 4){
                       break;
-                    }*/
+                    }
                   }
-                  console.log(result)
-
-                  /*do {
-                      (for(let j = 0; j < popular.length; j++){
-                      for(let i = 0; i < result.length; i++){
-                          if(result[i].filter(value => //(artists).includes(value)).length == 0){
-                            result.push
-                          }
+                  //add images to body
+                  for(let x = 1; x <= result.length;x++){
+                    for(let y of result[x-1]){
+                      for(let z of albums[y]){ //rip optimization
+                        const img = document.createElement("img");
+                        img.src = z
+                        const src = document.getElementById("quadrant"+x);
+                        src.appendChild(img);
+                        img.style.maxWidth = "30%";
+                        img.style.maxHeight = "auto";
+                        img.style.verticalAlign = "bottom";
+                        img.style.padding = "1%"
                       }
                     }
-                  } while (result.length < 4)8?*/
+                  }
                 }
               })
             }

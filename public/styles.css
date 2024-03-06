@@ -1,0 +1,15 @@
+  .grid-item{
+    width: 225px;
+    height: 225px;
+    padding: 12px;
+  }
+
+  .flex-container{
+    display: flex;
+    max-height: 500px;
+    max-width: 500px;
+    flex-wrap: wrap;
+    background-image: url("axis-centered.png");
+    background-size: contain;
+  }
+
