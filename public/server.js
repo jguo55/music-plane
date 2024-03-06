@@ -91,12 +91,13 @@ const gen = () => {
                       if(!(x in genres)){
                         genres[x] = [];
                       }
-                      genres[x].push(artists[i].name) //include duplicates to find genres that user listens to the most
+                      if(!(genres[x].includes(artists[i].name))){
+                        genres[x].push(artists[i].name)
+                      }
                     }
                   }
                   let popular = [];
                   for(const[key, value] of Object.entries(genres)){
-                    genres[key] = value.filter(removeDuplicates) //remove duplicates
                     let total = 0;
                     for(let x of genres[key]){
                       total += ranking[x]
