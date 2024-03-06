@@ -47,7 +47,6 @@ const gen = () => {
         },
         success: function (data2) {
           const items = data.items.concat(data2.items) //combine data
-          console.log(items)
           for(let i = 0; i < 100; i++){
             if(!(items[i].artists[0].name in albums)){
               albums[items[i].artists[0].name] = []
@@ -93,7 +92,6 @@ const gen = () => {
                       total += ranking[x]
                       len += albums[x].length
                     }
-                    console.log(len)
                     popular.push([total, key])
                     //if more than 9 albums, then the genre is too broad
                     if(len > 9){
@@ -106,9 +104,7 @@ const gen = () => {
                   }
                   popular = popular.sort(function(a, b) { //sort by popularity
                     return b[0] - a[0];
-                  });
-                  console.log(popular)
-                  
+                  });                  
                   //add top non intersecting genres to results until there are 4
                   result.push(genres[popular[0][1]]) //add top result
                   for(x of popular){
@@ -159,9 +155,6 @@ const gen = () => {
       })
     }
   })
-    console.log(genres)
-    console.log(albums)
-    console.log(ranking)
 }
 
 generate().addEventListener('click', gen)

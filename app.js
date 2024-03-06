@@ -16,9 +16,9 @@ var cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
 
 dotenv.config()
-const client_id = process.env.SPOTIFY_CLIENT_ID; // your clientId
+const client_id = process.env.SPOTIFY_CLIENT_ID; 
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
-var redirect_uri = 'http://localhost:3000/callback'; // Your redirect uri
+var redirect_uri = 'https://music-plane-7453580aed97.herokuapp.com/callback'; // Your redirect uri
 
 
 const generateRandomString = (length) => {
@@ -145,4 +145,4 @@ app.get('/refresh_token', function(req, res) {
 });
 
 console.log('Listening on 3000');
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
