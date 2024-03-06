@@ -11,17 +11,6 @@ const getHashParams = () => {
   return hashParams;
 };
 
-function removeDuplicates(value, index, array){
-  return array.indexOf(value) === index
-}
-
-function nextSquare(int){
-  let i = 0;
-  do {
-    i++
-  } while (i*i <= int)
-  return i
-}
 
 let params = getHashParams();
 
@@ -99,11 +88,15 @@ const gen = () => {
                   let popular = [];
                   for(const[key, value] of Object.entries(genres)){
                     let total = 0;
+                    let len = 0;
                     for(let x of genres[key]){
                       total += ranking[x]
+                      len += albums[x].length
                     }
+                    console.log(len)
                     popular.push([total, key])
-                    if(genres[key].length > 5){ // if more than 9 albums too broad
+                    //if more than 9 albums, then the genre is too broad
+                    if(len > 9){
                       for(let x of popular){
                         if(x[1] == key){
                           popular.splice(popular.indexOf(x), popular.indexOf(x))
@@ -117,7 +110,6 @@ const gen = () => {
                   console.log(popular)
                   
                   //add top non intersecting genres to results until there are 4
-                  //i would like to use Set.intersection but it is not widely supported
                   result.push(genres[popular[0][1]]) //add top result
                   for(x of popular){
                     let intersects = false
@@ -135,17 +127,28 @@ const gen = () => {
                   }
                   //add images to body
                   for(let x = 1; x <= result.length;x++){
+                    let urls = []
+                    let width = 99;
                     for(let y of result[x-1]){
                       for(let z of albums[y]){ //rip optimization
-                        const img = document.createElement("img");
-                        img.src = z
-                        const src = document.getElementById("quadrant"+x);
-                        src.appendChild(img);
-                        img.style.maxWidth = "30%";
-                        img.style.maxHeight = "auto";
-                        img.style.verticalAlign = "bottom";
-                        img.style.padding = "1%"
+                        urls.push(z)
                       }
+                    }
+                    if(urls.length > 4){
+                      width = 31.3
+                    }
+                    else if(urls.length > 1){
+                      width = 48
+                    }
+                    for(let y of urls){
+                    const img = document.createElement("img");
+                    img.src = y
+                    const src = document.getElementById("quadrant"+x);
+                    src.appendChild(img);
+                    img.style.verticalAlign = "bottom";
+                    img.style.maxHeight = "auto";
+                    img.style.padding = "1%";
+                    img.style.maxWidth = width+"%"
                     }
                   }
                 }
