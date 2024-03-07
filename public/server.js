@@ -33,7 +33,6 @@ const gen = () => {
 
   let result = [];
   
-  //array of top 100 albums separated into 2 api calls
   $.ajax({
     url: `${SPOTIFY_ROOT}/me/top/tracks?limit=${limit}&time_range=short_term&offset=${offset}`,
     headers: {
@@ -47,7 +46,10 @@ const gen = () => {
         },
         success: function (data2) {
           const items = data.items.concat(data2.items) //combine data
-          for(let i = 0; i < 100; i++){
+          for(let i = 0; i < items.length; i++){
+            if(items[i] === undefined){
+              break;
+            }
             if(!(items[i].artists[0].name in albums)){
               albums[items[i].artists[0].name] = []
             }
