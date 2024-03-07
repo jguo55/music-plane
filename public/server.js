@@ -16,9 +16,6 @@ let params = getHashParams();
 
 let access_token = params.access_token;
 
-//genres that are too broad or don't exist
-//const exclude = ['pop', 'rap', 'rock', 'pov: indie']
-
 const generate = () => document.getElementById('generate');
 
 const gen = () => {
@@ -95,7 +92,7 @@ const gen = () => {
                       len += albums[x].length
                     }
                     popular.push([total, key])
-                    //if more than 9 albums, then the genre is too broad
+                    //if more than 9 albums, then the genre is too broad, remove it
                     if(len > 9){
                       for(let x of popular){
                         if(x[1] == key){
