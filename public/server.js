@@ -11,10 +11,16 @@ const getHashParams = () => {
   return hashParams;
 };
 
-
 let params = getHashParams();
 
 let access_token = params.access_token;
+
+if(access_token){
+  $('#loggedin').show();
+}
+else {
+  $('#loggedin').hide();
+}
 
 const generate = () => document.getElementById('generate');
 
@@ -26,7 +32,7 @@ const gen = () => {
   const albums = {};
   let ids = '';
   let ids2 = '';
-  let ranking = {};
+  const ranking = {};
 
   let result = [];
   
@@ -91,14 +97,9 @@ const gen = () => {
                       total += ranking[x]
                       len += albums[x].length
                     }
-                    popular.push([total, key])
-                    //if more than 9 albums, then the genre is too broad, remove it
-                    if(len > 9){
-                      for(let x of popular){
-                        if(x[1] == key){
-                          popular.splice(popular.indexOf(x), popular.indexOf(x))
-                        }
-                      }
+                    //if more than 9 albums, then the genre is too broad don't add
+                    if(!(len > 9)){
+                      popular.push([total, key])
                     }
                   }
                   popular = popular.sort(function(a, b) { //sort by popularity
@@ -146,6 +147,9 @@ const gen = () => {
                     img.style.maxWidth = width+"%"
                     }
                   }
+                  console.log(popular)
+                  console.log(albums)
+                  console.log(ranking)
                 }
               })
             }
