@@ -147,9 +147,13 @@ const gen = () => {
                     img.style.maxWidth = width+"%"
                     }
                   }
-                  console.log(popular)
+                  console.log(items)
                   console.log(albums)
+                  console.log(artists)
                   console.log(ranking)
+                  console.log(genres)
+                  console.log(popular)
+                  console.log(result)
                 }
               })
             }
