@@ -178,5 +178,3 @@ const gen = () => {
 }
 
 generate().addEventListener('click', gen)
-
-
