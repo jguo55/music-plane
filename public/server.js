@@ -11,6 +11,14 @@ const getHashParams = () => {
   return hashParams;
 };
 
+const rows = (i) => {
+  i-- //ok yknow this code is really sloppy but who cares
+  do {
+    i++
+  } while (!Number.isInteger(Math.sqrt(i)))
+  return Math.sqrt(i)
+}
+
 let params = getHashParams();
 
 let access_token = params.access_token;
@@ -24,8 +32,18 @@ else {
 
 const generate = () => document.getElementById('generate');
 
+const tr_btn = document.getElementById("time range")
+
 const gen = () => {
+  //clear the old images
+  document.getElementById('quadrant1').replaceChildren();
+  document.getElementById('quadrant2').replaceChildren();
+  document.getElementById('quadrant3').replaceChildren();
+  document.getElementById('quadrant4').replaceChildren();
+
+
   const limit = 50; //Spotify says the limit for artist endpoint is 100, when in reality it is 50
+  let time_range = tr_btn.value;
   let offset = 0;
 
   const genres = {};
@@ -37,7 +55,7 @@ const gen = () => {
   let result = [];
   
   $.ajax({
-    url: `${SPOTIFY_ROOT}/me/top/tracks?limit=${limit}&time_range=short_term&offset=${offset}`,
+    url: `${SPOTIFY_ROOT}/me/top/tracks?limit=${limit}&time_range=${time_range}&offset=${offset}`,
     headers: {
       Authorization: 'Bearer ' + access_token,
     },
@@ -97,8 +115,8 @@ const gen = () => {
                       total += ranking[x]
                       len += albums[x].length
                     }
-                    //if more than 9 albums, then the genre is too broad don't add
-                    if(!(len > 9)){
+                    //if more than 9 albums, then the genre is too broad don't add (unless it's just one artist, thank brandon and his shostakovich obsession)
+                    if(!(len > 9) || (len > 9 && genres.length == 1)){
                       popular.push([total, key])
                     }
                   }
@@ -124,18 +142,13 @@ const gen = () => {
                   //add images to body
                   for(let x = 1; x <= result.length;x++){
                     let urls = []
-                    let width = 99;
+                    let width = 98;
                     for(let y of result[x-1]){
                       for(let z of albums[y]){ //rip optimization
                         urls.push(z)
                       }
                     }
-                    if(urls.length > 4){
-                      width = 31.3
-                    }
-                    else if(urls.length > 1){
-                      width = 48
-                    }
+                    width = 100/rows(urls.length)-2
                     for(let y of urls){
                     const img = document.createElement("img");
                     img.src = y

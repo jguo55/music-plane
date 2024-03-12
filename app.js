@@ -1,12 +1,4 @@
-/**
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
- *
- * For more information, read
- * https://developer.spotify.com/documentation/web-api/tutorials/code-flow
- */
-
+//spotify auth
 const express = require('express');
 var request = require('request');
 var crypto = require('crypto');
@@ -17,8 +9,8 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 const client_id = process.env.SPOTIFY_CLIENT_ID; 
-const client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
-var redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Your redirect uri
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+var redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 
 const generateRandomString = (length) => {
   return crypto
@@ -40,7 +32,6 @@ app.get('/login', function(req, res) {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
-  // your application requests authorization
   var scope = 'user-top-read';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -53,9 +44,6 @@ app.get('/login', function(req, res) {
 });
 
 app.get('/callback', function(req, res) {
-
-  // your application requests refresh and access tokens
-  // after checking the state parameter
 
   var code = req.query.code || null;
   var state = req.query.state || null;
@@ -94,12 +82,10 @@ app.get('/callback', function(req, res) {
           json: true
         };
 
-        // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           console.log(body);
         });
 
-        // we can also pass the token to the browser to make requests from there
         res.redirect('/#' +
           querystring.stringify({
             access_token: access_token,
