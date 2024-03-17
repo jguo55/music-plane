@@ -1,4 +1,6 @@
-  .grid-item{
+
+
+.grid-item{
     width: 230px;
     height: 230px;
     padding: 10px;
@@ -12,9 +14,4 @@
     background-image: url("axis-centered.png");
     background-size: contain;
   }
-
-
-  #loggedin{
-    visibility: 'hidden';
-  }
-
+  

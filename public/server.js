@@ -25,9 +25,11 @@ let access_token = params.access_token;
 
 if(access_token){
   $('#loggedin').show();
+  $('#loggedout').hide();
 }
 else {
   $('#loggedin').hide();
+  $('#loggedout').show();
 }
 
 const generate = () => document.getElementById('generate');
@@ -35,6 +37,8 @@ const generate = () => document.getElementById('generate');
 const tr_btn = document.getElementById("time range")
 
 const gen = () => {
+  $('#generate').attr('disabled','disabled'); //prevent spam clicking
+
   //clear the old images
   document.getElementById('quadrant1').replaceChildren();
   document.getElementById('quadrant2').replaceChildren();
@@ -72,10 +76,11 @@ const gen = () => {
               break;
             }
             if(!(items[i].artists[0].name in albums)){
-              albums[items[i].artists[0].name] = []
+              albums[items[i].artists[0].name] = {images:[],urls:[]}
             }
-            if(!(items[i].album.images.length == 0) && !(albums[items[i].artists[0].name].includes(items[i].album.images[0].url))){
-              albums[items[i].artists[0].name].push(items[i].album.images[0].url) //albums from artist that user listens to
+            if(!(items[i].album.images.length == 0) && !(albums[items[i].artists[0].name].images.includes(items[i].album.images[0].url))){
+              albums[items[i].artists[0].name].images.push(items[i].album.images[0].url) //albums from artist that user listens to
+              albums[items[i].artists[0].name].urls.push(items[i].album.external_urls.spotify) //album url
             }
             if(i < 50) { //ids for artist api call
               i == 49 ? ids += items[i].artists[0].id: ids += items[i].artists[0].id + ',';
@@ -113,7 +118,7 @@ const gen = () => {
                     let len = 0;
                     for(let x of genres[key]){
                       total += ranking[x]
-                      len += albums[x].length
+                      len += albums[x].images.length
                     }
                     //if more than 9 albums, then the genre is too broad don't add (unless it's just one artist, thank brandon and his shostakovich obsession)
                     if(!(len > 9) || (len > 9 && genres.length == 1)){
@@ -141,24 +146,31 @@ const gen = () => {
                   }
                   //add images to body
                   for(let x = 1; x <= result.length;x++){
-                    let urls = []
-                    let width = 98;
+                    let pics = []
+                    let len = 0;
                     for(let y of result[x-1]){
-                      for(let z of albums[y]){ //rip optimization
-                        urls.push(z)
+                      pics.push(albums[y])
+                      len += albums[y].images.length
+                    }
+                    let width = 100/rows(len)-2
+                    for(let y of pics){
+                      for(let z = 0; z < y.images.length; z++){ //rip optimization
+                        const link = document.createElement("a");
+                        link.href = y.urls[z]
+                        link.target = "_blank"
+                        link.rel = "noopener noreferrer"
+                        const img = document.createElement("img");
+                        img.src = y.images[z]
+                        const src = document.getElementById("quadrant"+x);
+                        link.appendChild(img)
+                        src.appendChild(link);
+                        img.style.verticalAlign = "bottom";
+                        img.style.maxHeight = "auto";
+                        img.style.padding = "1%";
+                        img.style.maxWidth = width+"%"
                       }
                     }
-                    width = 100/rows(urls.length)-2
-                    for(let y of urls){
-                    const img = document.createElement("img");
-                    img.src = y
-                    const src = document.getElementById("quadrant"+x);
-                    src.appendChild(img);
-                    img.style.verticalAlign = "bottom";
-                    img.style.maxHeight = "auto";
-                    img.style.padding = "1%";
-                    img.style.maxWidth = width+"%"
-                    }
+                    console.log(pics)
                   }
                   console.log(items)
                   console.log(albums)
@@ -167,6 +179,7 @@ const gen = () => {
                   console.log(genres)
                   console.log(popular)
                   console.log(result)
+                  $('#generate').removeAttr('disabled'); //reenable button after queries are done
                 }
               })
             }
