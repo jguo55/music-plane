@@ -24,17 +24,21 @@ let params = getHashParams();
 let access_token = params.access_token;
 
 if(access_token){
-  $('#loggedin').show();
+  $('#generate').html('Generate Plane');
+  $('#generate').removeAttr('disabled');
   $('#loggedout').hide();
+  $('#loggedin').show();
 }
 else {
+  $('#generate').html('Login to Generate');
+  $('#generate').attr('disabled','disabled'); //disable button if not logged in
+  $('loggedout').show();
   $('#loggedin').hide();
-  $('#loggedout').show();
 }
 
 const generate = () => document.getElementById('generate');
 
-const tr_btn = document.getElementById("time range")
+const tr_btn = document.getElementById("time-range")
 
 const gen = () => {
   $('#generate').attr('disabled','disabled'); //prevent spam clicking
@@ -170,7 +174,6 @@ const gen = () => {
                         img.style.maxWidth = width+"%"
                       }
                     }
-                    console.log(pics)
                   }
                   console.log(items)
                   console.log(albums)

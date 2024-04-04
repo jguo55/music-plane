@@ -1,39 +1,67 @@
 <!DOCTYPE html>
+<html lang="en">
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Music Plane</title>
         <link rel="stylesheet" href="styles.css" />
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <meta name="google-site-verification" content="1IMHmTKR_M1jZZjOTcDrAmrKhfF7JGzwR-O7ioCNXds" />
     </head>
     <body>
-        <h1>Music Plane</h1>
-        <p>
-            Welcome to Music Plane
-        </p>
-        <img src="spotify-logo.svg" id="logo">
-        <div id = "loggedout" class="Login">
-            <header class="App-header">
-                <a class="btn-spotify" href="/login">Login with Spotify</a>
+        <div id="wrapper">
+            <header id="header">
+                <p>
+                    <b>Music Plane</b>
+                    <img src="spotify-logo.png" id="logo" alt="Spotify Logo">
+                </p>
             </header>
-        </div>
-        <div id = "loggedin">
-            <div class="Generate">
-                <button class="btn-gen" id="generate">Generate Plane</button>
+            <div id="main">
+                <div id="content" class="main">
+                    <div class="content-item" id ="left">
+                        <div class="flex-container" id="plane"> 
+                            <div class ="grid-item" id="quadrant1"></div>
+                            <div class ="grid-item" id="quadrant2"></div>
+                            <div class ="grid-item" id="quadrant3"></div>
+                            <div class ="grid-item" id="quadrant4"></div>
+                        </div>
+                    </div>
+                    <div class="content-item" id="right">
+                        <p>
+                            Welcome to Music Plane! <br><br>
+                            Select your time range and click <br>  the button below.
+                        </p>
+                        <br>
+                        <div id ="loggedout" class ="right-item">
+                            <a class="login-btn" href="/login">Login with Spotify</a>
+                        </div>
+
+                        <div id = "loggedin" class = "right-item">
+                            <select id="time-range">
+                                <option value="short_term">Past 4 Weeks</option>
+                                <option value="medium_term">Past 6 Months</option>
+                                <option value="long_term">All Time</option>
+                            </select>
+                            <div class="Generate">
+                                <button class="btn" id="generate">Generate Plane</button>
+                            </div>
+                            <br>
+                            <div class="Share">
+                                <button class="btn" id="share">Share</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <select id="time range">
-                <option value="short_term">Past 4 Weeks</option>
-                <option value="medium_term">Past 6 Months</option>
-                <option value="long_term">All Time</option>
-              </select>
-            <div class="flex-container" id="plane"> 
-                <div class ="grid-item" id="quadrant1"></div>
-                <div class ="grid-item" id="quadrant2"></div>
-                <div class ="grid-item" id="quadrant3"></div>
-                <div class ="grid-item" id="quadrant4"></div>
+            <div id="footer">
+                <div class="line"><hr> </div>
+                <br>
+                <p>Created By  <a href="https://jguo55.github.io/">Jensen Guo</a>
+                </p>
+                <!--<p>Home | About | Privacy Policy | Contact</p>-->
             </div>
-        </div>
-        <script src = "server.js"></script>
-    </body>
+            <script src = "server.js"></script>
+        </body>
+    </div>
 </html>
