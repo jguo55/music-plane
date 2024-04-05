@@ -25,9 +25,9 @@
 }
 
 #logo {
-  width: 15rem;
+  width: 10rem;
   float: right;
-  padding: 10px;
+  padding: 5px;
 }
 
 #content {
@@ -157,5 +157,6 @@ a.login-btn {
     right: 0;
     position: absolute;
     margin-right: 30px;
+    width: 15rem;
   }
 }
