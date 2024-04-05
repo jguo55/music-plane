@@ -21,13 +21,13 @@
 
 #header {
   text-align: center;
-  font-size: 4.5rem;
+  font-size: 4rem;
 }
 
 #logo {
   width: 10rem;
   float: right;
-  padding: 5px;
+  padding: 10px;
 }
 
 #content {
@@ -158,5 +158,9 @@ a.login-btn {
     position: absolute;
     margin-right: 30px;
     width: 15rem;
+  }
+
+  #header {
+    font-size: 4.5rem;
   }
 }
