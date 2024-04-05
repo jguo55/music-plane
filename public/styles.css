@@ -22,6 +22,7 @@
 #header {
   text-align: center;
   font-size: 4rem;
+  margin: 20px;
 }
 
 #logo {
@@ -40,12 +41,8 @@
 #right {
   display: flex;
   flex-direction: column;
-  font-size: 2.5rem;
-  margin: 2vh left;
-}
-
-.content-item {
-  padding: 20px;
+  font-size: 2.2rem;
+  margin-left: 5vh;
 }
 
 a.login-btn {
@@ -90,6 +87,13 @@ a.login-btn {
   width: 70%;
 }
 
+#watermark {
+  text-align: left;
+  color: rgb(149, 147, 147);
+  font-size: 1.3rem;
+  margin-bottom: 50px;
+}
+
 
 .btn:disabled{
   text-decoration: none;
@@ -132,7 +136,6 @@ a.login-btn {
 .line hr{
   width: 40%;
   color: rgb(144, 133, 133);
-
 }
 
 #footer {
@@ -161,6 +164,6 @@ a.login-btn {
   }
 
   #header {
-    font-size: 4.5rem;
+    font-size: 5rem;
   }
 }
