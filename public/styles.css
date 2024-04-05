@@ -26,9 +26,8 @@
 
 #logo {
   width: 15rem;
-  right: 0;
-  position: absolute;
-  margin-right: 30px;
+  float: right;
+  padding: 10px;
 }
 
 #content {
@@ -100,20 +99,21 @@ a.login-btn {
 }
 
 .grid-item{
-    width: 230px;
-    height: 230px;
+    width: 150px;
+    height: 150px;
     padding: 10px;
   }
 
 .flex-container{
     display: flex;
-    max-height: 500px;
-    max-width: 500px;
+    width: 340px;
+    height: 340px;
     flex-wrap: wrap;
     background-image: url("axis-centered.png");
     background-size: contain;
     margin: auto;
   }
+
 
 #time-range {
   width: 90%;
@@ -140,4 +140,22 @@ a.login-btn {
   text-align: center;
   color: black;
 }
-  
+
+@media only screen and (min-width: 768px) {
+  .flex-container {
+    width: 500px;
+    height: 500px;
+  }
+
+  .grid-item {
+    width: 230px;
+    height: 230px;
+
+  }
+
+  #logo {
+    right: 0;
+    position: absolute;
+    margin-right: 30px;
+  }
+}
